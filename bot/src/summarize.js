@@ -41,7 +41,6 @@ function formatMessage(row) {
     if (row.message_type === 'text') {
         body = row.text_content;
     } else if (row.text_content) {
-        // вложение с подписью, например фото с caption
         body = `[${row.message_type}] ${row.text_content}`;
     } else {
         body = `[${row.message_type}]`;
@@ -74,7 +73,6 @@ function formatMessage(row) {
     if (row.message_type === 'text') {
         body = row.text_content;
     } else if (row.text_content) {
-        // вложение с подписью, например фото с caption
         body = `[${row.message_type}] ${row.text_content}`;
     } else {
         body = `[${row.message_type}]`;

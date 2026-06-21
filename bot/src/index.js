@@ -9,7 +9,7 @@ const { closePool } = require('./db');
  
 const BOT_TOKEN = SETTINGS.BOT_TOKEN;
 if (!BOT_TOKEN) {
-    console.error('[index] Переменная окружения BOT_TOKEN не задана. Останавливаюсь.');
+    console.error('[index] Environment variable BOT_TOKEN is not set. Stopping.');
     process.exit(1);
 }
  
@@ -18,18 +18,16 @@ const bot = new Telegraf(BOT_TOKEN);
 registerHandlers(bot);
  
 bot.catch((err, ctx) => {
-    console.error(`[index] Необработанная ошибка для обновления ${ctx.updateType}:`, err);
+    console.error(`[index] Unhandled error for update ${ctx.updateType}:`, err);
 });
  
 async function start() {
     await bot.launch();
-    console.log('[index] Бот запущен (long polling).');
+    console.log('[index] Bot started (long polling).');
 }
  
-// Корректное завершение по сигналам — важно при деплое через docker-compose/systemd,
-// чтобы не терять текущие запросы и не оставлять "зависшие" соединения с БД.
 async function shutdown(signal) {
-    console.log(`[index] Получен ${signal}, останавливаюсь...`);
+    console.log(`[index] Received ${signal}, stopping...`);
     bot.stop(signal);
     await closePool();
     process.exit(0);
@@ -39,6 +37,6 @@ process.once('SIGINT', () => shutdown('SIGINT'));
 process.once('SIGTERM', () => shutdown('SIGTERM'));
  
 start().catch((err) => {
-    console.error('[index] Не удалось запустить бота:', err);
+    console.error('[index] Failed to start bot:', err);
     process.exit(1);
 });

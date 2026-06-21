@@ -37,8 +37,6 @@ function registerHandlers(bot) {
     );
 }
  
-
-
 async function logIncomingMessage(ctx) {
     const msg = ctx.message;
     const chat = ctx.chat;
@@ -109,11 +107,6 @@ async function handleSummaryCommand(ctx) {
     });
 }
  
-/**
- * Определяет начало периода для выжимки:
- * - "/summary 6h" / "/summary 3d" — явный период
- * - "/summary" без аргумента — с момента последней выжимки, либо DEFAULT_PERIOD_HOURS, если выжимок ещё не было
- */
 async function resolvePeriodStart(chatId, periodArg) {
     if (periodArg) {
         const parsed = parsePeriodArg(periodArg);
@@ -126,9 +119,6 @@ async function resolvePeriodStart(chatId, periodArg) {
     return new Date(Date.now() - DEFAULT_PERIOD_HOURS * 60 * 60 * 1000);
 }
  
-/**
- * Парсит строки вида "6h", "3d", "30m" в миллисекунды. Возвращает null, если формат не распознан.
- */
 function parsePeriodArg(arg) {
     const match = /^(\d+)([hdm])$/.exec(arg.trim().toLowerCase());
     if (!match) return null;
