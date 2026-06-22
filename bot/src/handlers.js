@@ -9,6 +9,7 @@ const { getRandomMeme } = require('./media');
 const { generateSummary } = require('./summarize');
 const { BOT_MESSAGES } = require('./messages');
 const { shouldRequestCigarette, requestCigarette, registerCigaretteHandlers } = require('./cigarette');
+const { parse } = require('path');
  
 
 const DEFAULT_PERIOD_HOURS = 24;
@@ -155,7 +156,10 @@ async function handleSummaryCommand(ctx) {
     const periodLabel = formatPeriodLabel(periodStart, periodEnd);
     await ctx.reply(
         BOT_MESSAGES.summaryResult({ periodLabel, messageCount: messages.length, summaryText }),
-        { reply_to_message_id: ctx.message.message_id }
+        {
+            reply_to_message_id: ctx.message.message_id,
+            parse_mode: 'Markdown'
+        }
     );
 }
  
