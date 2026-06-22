@@ -1,0 +1,47 @@
+- name: clone PunkDuck-TelegramBot repository
+  git:
+    repo: https://github.com/arsenhuman/PunkDuck-TelegramBot.git
+    dest: /opt/punkduck
+    version: main
+    force: yes
+
+- name: copy .env file to server
+  copy:
+    src: "{{ playbook_dir }}/../.env"   # берёт .env из корня репо на локальной машине
+    dest: /opt/punkduck/.env
+    mode: '0600'
+
+- name: build and start services with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: /opt/punkduck
+    build: always
+    state: present
+
+- name: start postgres service
+  community.docker.docker_compose_v2:
+    project_src: /opt/punkduck
+    services:
+      - postgres
+    state: present
+
+- name: wait for postgres to become healthy
+  community.docker.docker_container_info:
+    name: punkduck-postgres-1
+  register: pg_info
+  until: pg_info.container.State.Health.Status == 'healthy'
+  retries: 15
+  delay: 3
+
+- name: run database migrations
+  community.docker.docker_compose_v2:
+    project_src: /opt/punkduck
+    services:
+      - migrate
+    state: present
+
+- name: start bot service
+  community.docker.docker_compose_v2:
+    project_src: /opt/punkduck
+    services:
+      - bot
+    state: present
