@@ -13,7 +13,8 @@ const BOT_MESSAGES = {
         '/summary 6 — за последние 6 часов\n' +
         '/summary 24 — за последние 24 часа\n' +
         '/joke - выдавлю из себя анекдот\n' +
-        '/roast - быкануть могу. проверь.\n',
+        '/roast - быкануть могу. проверь.\n' +
+        '/someshit - скину рандомную хуйню.\n',
 
     summaryInProgress: () => {
         const phrases = [
